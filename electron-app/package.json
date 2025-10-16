@@ -1,0 +1,65 @@
+{
+  "name": "mpx-link-pro",
+  "version": "1.0.0",
+  "description": "MPX Link PRO - Professional Audio Streaming System",
+  "main": "dist/main/main.js",
+  "author": "MPX Link Team",
+  "license": "MIT",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:main\" \"npm run dev:renderer\"",
+    "dev:main": "tsc -p tsconfig.main.json && electron .",
+    "dev:renderer": "vite",
+    "build": "npm run build:main && npm run build:renderer",
+    "build:main": "tsc -p tsconfig.main.json",
+    "build:renderer": "vite build",
+    "package": "electron-builder",
+    "package:linux": "electron-builder --linux",
+    "package:all": "electron-builder -mwl"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.57.4",
+    "electron-store": "^8.1.0",
+    "lucide-react": "^0.344.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "@types/react": "^18.3.5",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "autoprefixer": "^10.4.18",
+    "concurrently": "^8.2.2",
+    "electron": "^28.0.0",
+    "electron-builder": "^24.9.1",
+    "postcss": "^8.4.35",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5.5.3",
+    "vite": "^5.4.2",
+    "vite-plugin-electron": "^0.28.0"
+  },
+  "build": {
+    "appId": "com.mpxlink.pro",
+    "productName": "MPX Link PRO",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "src/python/**/*",
+      "node_modules/**/*",
+      "package.json"
+    ],
+    "linux": {
+      "target": ["AppImage", "deb"],
+      "category": "AudioVideo",
+      "icon": "assets/icon.png"
+    },
+    "extraResources": [
+      {
+        "from": "src/python",
+        "to": "python"
+      }
+    ]
+  }
+}
