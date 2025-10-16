@@ -30,6 +30,7 @@ A complete audio streaming solution that connects two computers over network for
 ### User Interface
 - ✅ Modern React + Electron GUI
 - ✅ Real-time system monitoring (CPU, RAM, Network)
+- ✅ Network configuration panel (GUI for IP/Gateway/DNS setup)
 - ✅ Touch screen support
 - ✅ Dark theme
 - ✅ Kiosk mode for dedicated hardware
@@ -38,6 +39,7 @@ A complete audio streaming solution that connects two computers over network for
 ### Deployment Options
 - ✅ **Desktop Apps** - Windows, Linux, macOS
 - ✅ **Bootable ISO** - Complete Linux OS with app pre-installed
+- ✅ **GitHub Actions** - Automatic ISO build on every push
 - ✅ **Docker** - Containerized deployment (planned)
 
 ## 🚀 Quick Start
@@ -81,10 +83,11 @@ Boot from USB and the app starts automatically!
 
 ## 📚 Documentation
 
-- [**BUILD_AND_DEPLOY_GUIDE.md**](BUILD_AND_DEPLOY_GUIDE.md) - Complete build and deployment guide
+- [**UPLOAD_TO_GITHUB.md**](UPLOAD_TO_GITHUB.md) - **START HERE!** Step-by-step upload guide
 - [**GITHUB_ACTIONS_GUIDE.md**](GITHUB_ACTIONS_GUIDE.md) - Automatic ISO building with GitHub
+- [**NETWORK_CONFIG_GUIDE.md**](NETWORK_CONFIG_GUIDE.md) - Network setup (IP, Gateway, DNS)
+- [**BUILD_AND_DEPLOY_GUIDE.md**](BUILD_AND_DEPLOY_GUIDE.md) - Complete build and deployment guide
 - [**iso-builder/README.md**](iso-builder/README.md) - ISO builder technical docs
-- [**iso-builder/QUICK_START.md**](iso-builder/QUICK_START.md) - Quick start for beginners
 
 ## 🏗️ Project Structure
 

@@ -1,0 +1,36 @@
+name: Build MPX Link PRO ISO
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build-electron-app:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+    - run: cd electron-app && npm ci && npm run build
+    - uses: actions/upload-artifact@v4
+      with:
+        name: electron-app-build
+        path: electron-app/
+
+  build-iso:
+    needs: build-electron-app
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/download-artifact@v4
+      with:
+        name: electron-app-build
+        path: electron-app/
+    - run: sudo apt-get update && sudo apt-get install -y debootstrap squashfs-tools xorriso isolinux
+    - run: cd iso-builder && sudo ./build-iso.sh
+    - uses: actions/upload-artifact@v4
+      with:
+        name: mpx-link-pro-iso
+        path: iso-builder/*.iso

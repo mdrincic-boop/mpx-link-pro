@@ -1,0 +1,118 @@
+========================================
+MPX Link PRO - QUICK START
+========================================
+
+🚀 STEP 1: Upload to GitHub
+----------------------------
+Windows:
+  1. Double-click: check-github-files.bat
+  2. If all OK, run in Git Bash:
+     git add .
+     git commit -m "Add GitHub Actions"
+     git push origin main
+
+Linux/Mac:
+  1. Run: ./check-github-files.sh
+  2. If all OK:
+     git add .
+     git commit -m "Add GitHub Actions"
+     git push origin main
+
+Full guide: UPLOAD_TO_GITHUB.md
+
+
+📥 STEP 2: Download ISO (20-25 min later)
+------------------------------------------
+1. Go to: https://github.com/YOUR_USERNAME/mpx-link-pro
+2. Click: "Actions" tab
+3. Click: Latest workflow run
+4. Scroll to: "Artifacts"
+5. Download: "mpx-link-pro-iso"
+6. Unzip → mpx-link-pro-v1.0.0.iso ✅
+
+Full guide: GITHUB_ACTIONS_GUIDE.md
+
+
+🔥 STEP 3: Burn to USB
+-----------------------
+Windows:
+  - Use Rufus (DD mode)
+  - Select ISO
+  - Select USB drive
+  - Click "START"
+
+Linux:
+  sudo dd if=mpx-link-pro-v1.0.0.iso of=/dev/sdX bs=4M status=progress
+
+Mac:
+  Use Etcher or Balena
+
+
+💻 STEP 4: Boot & Configure
+----------------------------
+1. Boot from USB
+2. Auto-login as: mpxuser
+3. App starts automatically
+4. Click "Network" tab
+5. Set IP address:
+   - Computer A: 192.168.1.10
+   - Computer B: 192.168.1.20
+6. Click "Apply"
+7. Reboot
+
+Full guide: NETWORK_CONFIG_GUIDE.md
+
+
+🎵 STEP 5: Start Streaming
+---------------------------
+Computer A (Sender):
+  1. Select input device
+  2. Enter Computer B IP: 192.168.1.20
+  3. Click "Start Streaming"
+
+Computer B (Receiver):
+  1. Select output device
+  2. Click "Start Streaming"
+  3. Audio plays! 🎉
+
+
+📖 DOCUMENTATION
+----------------
+- UPLOAD_TO_GITHUB.md         → GitHub upload guide
+- GITHUB_ACTIONS_GUIDE.md     → Automatic builds
+- NETWORK_CONFIG_GUIDE.md     → Network setup
+- BUILD_AND_DEPLOY_GUIDE.md   → Full deployment
+
+README.md → Complete project documentation
+
+
+🆘 TROUBLESHOOTING
+------------------
+No Actions in GitHub?
+  → Check .github/workflows/ folder uploaded
+
+Build failing?
+  → Check Actions logs
+
+Network not working?
+  → Use DHCP first, then static IP
+
+Audio not streaming?
+  → Check firewall (port 5000)
+  → Ping other computer
+
+
+✅ CHECKLIST
+------------
+□ Uploaded to GitHub
+□ Actions workflow running
+□ ISO downloaded
+□ USB created
+□ Both computers booted
+□ Network configured
+□ Audio streaming works
+
+
+🎊 SUCCESS = Audio playing on both computers!
+
+Questions? Read the guides above!
