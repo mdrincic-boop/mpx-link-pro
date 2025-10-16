@@ -65,7 +65,34 @@ apt-get install -y \
     wget \
     git
 
+# Explicitly ensure kernel is installed
+echo "Verifying kernel installation..."
+apt-get install -y --reinstall linux-image-amd64
+dpkg --configure -a
+
+# Debug: List boot contents
+echo "Contents of /boot:"
+ls -la /boot/ || echo "ERROR: /boot/ is empty!"
+
+# Check for kernel files
+if ls /boot/vmlinuz-* 1> /dev/null 2>&1; then
+    echo "✓ Kernel found:"
+    ls -lh /boot/vmlinuz-*
+else
+    echo "✗ ERROR: No kernel found in /boot/"
+    exit 1
+fi
+
+if ls /boot/initrd.img-* 1> /dev/null 2>&1; then
+    echo "✓ Initrd found:"
+    ls -lh /boot/initrd.img-*
+else
+    echo "✗ ERROR: No initrd found in /boot/"
+    exit 1
+fi
+
 # Install Node.js 20.x
+echo "Installing Node.js..."
 curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
 apt-get install -y nodejs
 
@@ -84,6 +111,8 @@ EOF
 # Cleanup
 apt-get clean
 rm -rf /var/lib/apt/lists/*
+
+echo "Chroot configuration completed successfully!"
 CHROOT_SCRIPT
 
 echo "[5/8] Building Electron application..."
@@ -91,8 +120,11 @@ cd ../electron-app
 
 # Build if not already built
 if [ ! -d "dist" ]; then
+    echo "Building Electron app..."
     npm install
     npm run build
+else
+    echo "Using existing build..."
 fi
 
 # Install app to rootfs
@@ -116,9 +148,34 @@ echo "[7/8] Creating compressed filesystem..."
 mkdir -p "$ISO_DIR/live"
 mksquashfs "$ROOTFS_DIR" "$ISO_DIR/live/filesystem.squashfs" -comp xz -Xbcj x86
 
-# Copy kernel and initrd
-cp "$ROOTFS_DIR/boot/vmlinuz-"* "$ISO_DIR/live/vmlinuz"
-cp "$ROOTFS_DIR/boot/initrd.img-"* "$ISO_DIR/live/initrd"
+# Copy kernel and initrd with proper error handling
+echo "[7.5/8] Copying kernel and initrd..."
+echo "Looking for kernel and initrd in $ROOTFS_DIR/boot/..."
+
+KERNEL=$(ls "$ROOTFS_DIR/boot/vmlinuz-"* 2>/dev/null | head -n 1)
+INITRD=$(ls "$ROOTFS_DIR/boot/initrd.img-"* 2>/dev/null | head -n 1)
+
+if [ -z "$KERNEL" ]; then
+    echo "✗ ERROR: No kernel found in $ROOTFS_DIR/boot/"
+    echo "Contents of $ROOTFS_DIR/boot/:"
+    ls -la "$ROOTFS_DIR/boot/" || echo "Directory does not exist!"
+    exit 1
+fi
+
+if [ -z "$INITRD" ]; then
+    echo "✗ ERROR: No initrd found in $ROOTFS_DIR/boot/"
+    echo "Contents of $ROOTFS_DIR/boot/:"
+    ls -la "$ROOTFS_DIR/boot/" || echo "Directory does not exist!"
+    exit 1
+fi
+
+echo "✓ Found kernel: $KERNEL"
+echo "✓ Found initrd: $INITRD"
+
+cp "$KERNEL" "$ISO_DIR/live/vmlinuz"
+cp "$INITRD" "$ISO_DIR/live/initrd"
+
+echo "✓ Kernel and initrd copied successfully"
 
 # Create GRUB config
 mkdir -p "$ISO_DIR/boot/grub"
@@ -146,10 +203,18 @@ grub-mkrescue -o "../$ISO_NAME" "$ISO_DIR" \
     --label "MPX_LINK_PRO"
 
 cd ..
-ls -lh "$ISO_NAME"
-echo ""
-echo "✅ ISO created successfully: $ISO_NAME"
-echo "   Size: $(du -h "$ISO_NAME" | cut -f1)"
-echo ""
-echo "To write to USB:"
-echo "   sudo dd if=$ISO_NAME of=/dev/sdX bs=4M status=progress"
+
+# Final verification
+if [ -f "$ISO_NAME" ]; then
+    echo ""
+    echo "✅ ISO created successfully!"
+    echo "   File: $ISO_NAME"
+    echo "   Size: $(du -h "$ISO_NAME" | cut -f1)"
+    echo ""
+    echo "To write to USB:"
+    echo "   sudo dd if=$ISO_NAME of=/dev/sdX bs=4M status=progress"
+    echo ""
+else
+    echo "✗ ERROR: ISO file was not created!"
+    exit 1
+fi
