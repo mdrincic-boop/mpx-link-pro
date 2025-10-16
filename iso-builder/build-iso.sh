@@ -199,22 +199,34 @@ echo "[8/8] Creating bootable ISO image..."
 cd "$(dirname "$ISO_DIR")"
 
 grub-mkrescue -o "../$ISO_NAME" "$ISO_DIR" \
-    --volid "MPX_LINK_PRO" \
-    --label "MPX_LINK_PRO"
+    --volid "MPX_LINK_PRO"
 
 cd ..
 
 # Final verification
 if [ -f "$ISO_NAME" ]; then
+    ISO_SIZE=$(du -h "$ISO_NAME" | cut -f1)
     echo ""
-    echo "✅ ISO created successfully!"
-    echo "   File: $ISO_NAME"
-    echo "   Size: $(du -h "$ISO_NAME" | cut -f1)"
+    echo "✅ =============================================="
+    echo "✅ ISO CREATED SUCCESSFULLY!"
+    echo "✅ =============================================="
     echo ""
-    echo "To write to USB:"
-    echo "   sudo dd if=$ISO_NAME of=/dev/sdX bs=4M status=progress"
+    echo "   📁 File: $ISO_NAME"
+    echo "   📦 Size: $ISO_SIZE"
+    echo ""
+    echo "📝 To write to USB drive:"
+    echo "   Linux:   sudo dd if=$ISO_NAME of=/dev/sdX bs=4M status=progress && sync"
+    echo "   Windows: Use Rufus or balenaEtcher"
+    echo "   macOS:   sudo dd if=$ISO_NAME of=/dev/diskX bs=4m"
+    echo ""
+    echo "✅ Build completed at $(date)"
     echo ""
 else
-    echo "✗ ERROR: ISO file was not created!"
+    echo ""
+    echo "✗ =============================================="
+    echo "✗ ERROR: ISO FILE WAS NOT CREATED!"
+    echo "✗ =============================================="
+    echo ""
+    echo "Check the logs above for errors."
     exit 1
 fi
